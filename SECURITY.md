@@ -54,3 +54,12 @@ Audit bevat geen secrets en zo min mogelijk persoonsgegevens.
 - Gebruik correlation ids voor diagnose.
 - Bewaar alleen data die nodig is voor procesbesturing, validatie en audit.
 
+## Eerste runtime
+
+- De huidige app gebruikt lokale state in `.project-os/state/app-data.json`.
+- Auth-instellingen tonen alleen configuratiestatus, geen secrets.
+- LLM-instellingen bevatten modelkeuze en provider, geen API keys.
+- API-mutaties schrijven auditregels zonder secretwaarden.
+- `.gitignore` blokkeert lokale env-bestanden, secretbestanden, build-output en logs.
+
+Productieauthenticatie met Google is nog niet actief; server-side autorisatie moet worden toegevoegd voordat de app extern gebruikt wordt.

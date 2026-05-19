@@ -87,3 +87,16 @@ Tabellen mogen horizontaal scrollen wanneer nodig. Lange tekst moet afbreken of 
 
 Toon in een rustige hoek een versiedatum en tijd in lokaal formaat, inclusief seconden.
 
+## Eerste runtime
+
+De eerste appversie gebruikt Project als hoofdrecord en toont child-categorieen als hoofdsecties:
+
+- Source-modellen
+- Governance
+- Lifecycle
+- Werkpakketten
+- Validatie
+- Rapportage
+- Beheer
+
+Beheerbare data gebruikt lijsten met `Nieuw`, `Wijzigen`, `Verwijderen`, modals en bevestiging bij verwijderen. Op mobiel wordt de versie-indicatie onder de content geplaatst zodat die geen content overlapt.

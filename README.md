@@ -37,5 +37,32 @@ De belangrijkste belofte: regels worden niet alleen gegenereerd, maar ook gevali
 
 ## Huidige status
 
-Dit is de eerste documentatielaag. Er is nog geen deploybare applicatiecode. De volgende stap is het aanmaken van de gestructureerde source-modellen in `.project-os/source/`, waarna generatoren, validators, API's en UI-workflows kunnen volgen.
+De eerste werkende app is aanwezig:
 
+- React/Vite frontend met operationele projectnavigatie.
+- Node API voor source-modellen, projectstate, validatie en CRUD.
+- Source-modellen in `.project-os/source/`.
+- Lokale projectstate in `.project-os/state/app-data.json`.
+- CRUD voor werkpakketten, besluiten, risico's, gebruikers en domeinrollen.
+- Beheer voor authenticatie- en LLM-instellingen.
+- Health/readiness endpoints: `/api/health`, `/api/ready`, `/api/version`.
+
+## Lokaal draaien
+
+```powershell
+npm install
+npm run dev
+```
+
+Productiebuild lokaal controleren:
+
+```powershell
+npm run build
+npm run preview
+```
+
+Validator:
+
+```powershell
+npm run validate
+```

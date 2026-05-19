@@ -31,6 +31,29 @@ Agent Project OS krijgt API-first kernfunctionaliteit. UI, automatisering en lat
 | `/api/projects/{projectId}/risks` | Risico's beheren |
 | `/api/admin/config` | Beheerinstellingen, inclusief LLM-selectie |
 
+## Eerste implementatie
+
+De huidige app gebruikt een compacte lokale API zonder Express:
+
+| Endpoint | Methode | Doel |
+| --- | --- | --- |
+| `/api/health` | GET | Healthcheck |
+| `/api/ready` | GET | Readiness met validatiesamenvatting |
+| `/api/version` | GET | App-id, versie en lokale versietijd |
+| `/api/project-os` | GET | Source-modellen, app-state en validatie |
+| `/api/validation/run` | GET/POST | Validator draaien |
+| `/api/work-packages` | GET/POST | Werkpakketten lezen en aanmaken |
+| `/api/work-packages/{id}` | GET/PUT/DELETE | Werkpakket lezen, wijzigen en verwijderen |
+| `/api/decisions` | GET/POST | Besluiten lezen en aanmaken |
+| `/api/decisions/{id}` | GET/PUT/DELETE | Besluit lezen, wijzigen en verwijderen |
+| `/api/risks` | GET/POST | Risico's lezen en aanmaken |
+| `/api/risks/{id}` | GET/PUT/DELETE | Risico lezen, wijzigen en verwijderen |
+| `/api/users` | GET/POST | Gebruikers lezen en aanmaken |
+| `/api/users/{id}` | GET/PUT/DELETE | Gebruiker lezen, wijzigen en verwijderen |
+| `/api/domain-roles` | GET/POST | Domeinrollen lezen en aanmaken |
+| `/api/domain-roles/{id}` | GET/PUT/DELETE | Domeinrol lezen, wijzigen en verwijderen |
+| `/api/settings` | GET/PUT | Auth-, LLM- en UI-instellingen lezen en wijzigen |
+
 ## Foutgedrag
 
 Minimale foutvorm:
@@ -54,4 +77,3 @@ Elke mutatie controleert:
 - gebruiker heeft projectrol of adminrol;
 - rol mag de gevraagde actie uitvoeren;
 - actie past bij lifecycle-status.
-

@@ -38,12 +38,32 @@ agent-project-os
 
 ## Huidige status
 
-Er is op dit moment alleen projectdocumentatie en nog geen deploybare applicatiecode. Deployment wordt pas uitvoerbaar wanneer een runtime, buildscript, health endpoint en ALM/GitHub Actions-plan bestaan.
+Er is een werkende Node/React-app met productiebuild en lokale server. Deployment naar Dev vereist nog een GitHub Actions/ALM-plan of projectspecifiek deployscript.
+
+Lokale runtime:
+
+```powershell
+npm install
+npm run build
+npm run preview
+```
+
+Default local port:
+
+```text
+4173
+```
 
 ## Geplande health endpoints
 
 - `/health`
 - `/ready`
+- `/api/version`
+
+## Beschikbare health endpoints
+
+- `/api/health`
+- `/api/ready`
 - `/api/version`
 
 ## Releasecontrole
@@ -56,4 +76,3 @@ Rapporteer na elke deploy:
 - deployduur;
 - health/readiness-status;
 - eventuele open risico's.
-

@@ -154,3 +154,15 @@ Foutgedrag:
 - `unauthorized`
 - `report_unavailable`
 
+## Huidige API-bronnen voor latere MCP
+
+De eerste runtime heeft nog geen MCP-server, maar exposeert wel API's die direct als bron kunnen dienen:
+
+- `GET /api/project-os` voor source-modellen, projectstate en validatie.
+- `GET|POST /api/validation/run` voor validatie.
+- `GET|POST|PUT|DELETE /api/work-packages` voor werkpakketten.
+- `GET|POST|PUT|DELETE /api/decisions` voor besluiten.
+- `GET|POST|PUT|DELETE /api/risks` voor risico's.
+- `GET|PUT /api/settings` voor centrale auth-, LLM- en UI-instellingen.
+
+MCP-tools moeten deze API's blijven volgen, zodat UI en MCP dezelfde regels gebruiken.

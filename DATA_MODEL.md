@@ -138,3 +138,18 @@ Velden:
 - Een transition mag niet naar `Done` zonder vereiste kwaliteitsgates.
 - Een architectuurwijziging moet een besluit of ADR kunnen refereren.
 
+## Eerste app-state
+
+De eerste runtime bewaart lokale beheerdata in `.project-os/state/app-data.json`.
+
+Beheerbare collecties:
+
+- `workPackages`
+- `decisions`
+- `risks`
+- `users`
+- `domainRoles`
+- `settings`
+- `audit`
+
+Elke beheerbare collectie heeft in de UI een overzicht, een zichtbare `Nieuw`-actie en zichtbare acties voor wijzigen en verwijderen.

@@ -89,3 +89,20 @@ Operational tool, geen demo. De UI volgt hoofdrecord-detailstructuur met tabblad
 - Rollen en lifecycle zijn apart gemodelleerd, maar worden samen gevalideerd.
 - Rapportage is onderdeel van de workflow, niet een losse notitie achteraf.
 
+## Eerste runtime
+
+De eerste appversie gebruikt:
+
+- React + Vite voor de frontend.
+- Een kleine Node HTTP-server voor productiepreview en API.
+- Een Vite middleware-plugin voor dezelfde API tijdens development.
+- `js-yaml` voor het lezen van `.project-os/source/*.yaml`.
+- `.project-os/state/app-data.json` als lokale state voor CRUD-data.
+
+Belangrijke modules:
+
+- `server/lib/sourceStore.mjs`: leest en beschrijft source-modellen.
+- `server/lib/appDataStore.mjs`: leest, schrijft en auditte lokale app-state.
+- `server/lib/validation.mjs`: valideert source-modellen en werkpakketten.
+- `server/lib/api.mjs`: ontsluit health, readiness, source, validatie en CRUD.
+- `src/features/*`: operationele UI per procesgebied.

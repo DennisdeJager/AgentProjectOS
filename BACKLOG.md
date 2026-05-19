@@ -15,8 +15,9 @@ Stories:
 - STORY-001: Maak eerste projectdocumentatieset. Status: done op 2026-05-19.
 - STORY-002: Maak `.project-os/source/` YAML-modellen. Status: done op 2026-05-19.
 - STORY-003: Definieer JSON schema's voor source-modellen.
-- STORY-004: Bouw eerste validator voor rollen en lifecycle.
+- STORY-004: Bouw eerste validator voor rollen en lifecycle. Status: deels gedaan op 2026-05-19 als runtime-validator; schema's volgen nog.
 - STORY-005: Genereer Markdown vanuit source-modellen.
+- STORY-006: Bouw eerste operationele app op basis van source-modellen. Status: done op 2026-05-19.
 
 ## Epic 2 - Work package readiness
 
