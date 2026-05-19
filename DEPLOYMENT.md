@@ -33,12 +33,18 @@ agent-project-os
 1. Werk lokaal in de projectrepo.
 2. Voer relevante checks uit.
 3. Commit en push naar GitHub.
-4. Laat GitHub Actions/ALM deployen naar Dev via de self-hosted runner.
+4. Laat ALM het project registreren/provisionen en deployen via de ALM-managed GitHub workflows `deploy-latest-dev.yml` en `deploy.yml`.
 5. Controleer health/readiness.
 
 ## Huidige status
 
-Er is een werkende Node/React-app met productiebuild en lokale server. Deployment naar Dev vereist nog een GitHub Actions/ALM-plan of projectspecifiek deployscript.
+Er is een werkende Node/React-app met productiebuild en lokale server. Deployment naar Dev loopt via ALM naar app-id `agent-project-os`.
+
+ALM-runtime:
+
+- container internal port: `3000`
+- health/readiness: `/api/health` en `/api/ready`
+- Docker image build: `Dockerfile`
 
 Lokale runtime:
 
