@@ -97,8 +97,7 @@ export function App() {
         return (
           <Dashboard
             payload={payload}
-            onOpenWorkPackages={() => setActiveView('work-packages')}
-            onOpenValidation={() => setActiveView('validation')}
+            onNavigate={setActiveView}
           />
         );
     }
@@ -116,4 +115,3 @@ function applyTheme(theme: AppSettings['ui']['theme']) {
   const actual = theme === 'system' ? (prefersDark ? 'dark' : 'light') : theme;
   document.documentElement.dataset.theme = actual;
 }
-

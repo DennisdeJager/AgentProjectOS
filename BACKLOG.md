@@ -52,6 +52,7 @@ Stories:
 - STORY-033: Bouw lifecycle CRUD.
 - STORY-034: Bouw validatieresultaten.
 - STORY-035: Bouw beheer tabs voor auth, LLM en audit.
+- STORY-036: Verduidelijk primaire appflow en navigatie. Status: done op 2026-05-19.
 
 ## Epic 5 - AI-assisted generation
 

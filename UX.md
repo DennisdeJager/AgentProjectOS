@@ -100,3 +100,15 @@ De eerste appversie gebruikt Project als hoofdrecord en toont child-categorieen 
 - Beheer
 
 Beheerbare data gebruikt lijsten met `Nieuw`, `Wijzigen`, `Verwijderen`, modals en bevestiging bij verwijderen. Op mobiel wordt de versie-indicatie onder de content geplaatst zodat die geen content overlapt.
+
+## Primaire gebruikersroute
+
+De startpagina moet de gebruiker direct orienteren op de werkvolgorde:
+
+1. Begrijp het project- en procesmodel.
+2. Controleer rollen, bevoegdheden en lifecycle.
+3. Maak werkpakketten klein, toetsbaar en agent-ready.
+4. Run validatie en los blockers op.
+5. Leg besluiten, risico's, audit en release-informatie vast.
+
+Het dashboard toont daarom een aanbevolen volgende stap op basis van validatiestatus, blockers en open werkpakketten. Navigatie gebruikt mensentaal naast de interne modelnamen, zodat gebruikers niet hoeven te raden waar `source`, `governance` of `lifecycle` voor dient.
