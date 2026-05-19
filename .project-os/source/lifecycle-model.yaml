@@ -1,0 +1,283 @@
+schema_version: 0.1.0
+kind: lifecycle_model
+metadata:
+  project_id: agent-project-os
+  versioned_at: "2026-05-19T13:34:29+02:00"
+  source_status: baseline
+status_order:
+  - idea
+  - intake
+  - refinement
+  - architecture_review
+  - ready_for_build
+  - implementation
+  - developer_validation
+  - test_review
+  - code_review
+  - release_review
+  - done
+states:
+  - id: idea
+    name: Idea
+    owner_role: conductor
+    allowed_roles:
+      - conductor
+      - scrum_master
+    entry_criteria:
+      - work_need_is_identified
+    exit_criteria:
+      - initial_goal_is_written
+      - target_user_or_business_context_is_named
+    required_documents: []
+    required_checks: []
+    allowed_next:
+      - intake
+      - blocked
+  - id: intake
+    name: Intake
+    owner_role: scrum_master
+    allowed_roles:
+      - scrum_master
+      - conductor
+    entry_criteria:
+      - goal_is_known
+      - user_or_business_context_is_named
+    exit_criteria:
+      - initial_scope_is_described
+      - open_questions_are_recorded
+      - refinement_owner_is_known
+    required_documents:
+      - project_context_or_story
+    required_checks:
+      - intake_completeness
+    allowed_next:
+      - refinement
+      - blocked
+  - id: refinement
+    name: Refinement
+    owner_role: scrum_master
+    allowed_roles:
+      - scrum_master
+      - architect
+      - reviewer
+    entry_criteria:
+      - intake_exit_criteria_met
+    exit_criteria:
+      - acceptance_criteria_are_concrete
+      - test_criteria_are_described
+      - files_in_scope_and_out_of_scope_are_named_or_explained
+      - dependencies_and_risks_are_named
+      - work_package_is_small_enough_or_split
+    required_documents:
+      - work_package_draft
+    required_checks:
+      - work_package_readiness
+      - split_need_check
+    allowed_next:
+      - architecture_review
+      - ready_for_build
+      - blocked
+  - id: architecture_review
+    name: Architecture Review
+    owner_role: architect
+    allowed_roles:
+      - architect
+      - engineer
+      - reviewer
+    entry_criteria:
+      - architecture_impact_possible_or_uncertain
+    exit_criteria:
+      - architecture_impact_assessed
+      - adr_created_or_no_adr_reason_recorded
+      - technical_risks_recorded
+    required_documents:
+      - architecture_impact_note
+    required_checks:
+      - adr_requirement_check
+      - technical_risk_check
+    allowed_next:
+      - ready_for_build
+      - refinement
+      - blocked
+  - id: ready_for_build
+    name: Ready for Build
+    owner_role: scrum_master
+    allowed_roles:
+      - scrum_master
+      - reviewer
+    entry_criteria:
+      - acceptance_criteria_are_concrete
+      - test_criteria_are_described
+      - work_package_readiness_passed
+      - required_architecture_review_completed_or_not_needed
+    exit_criteria:
+      - allowed_role_assigned
+      - reviewer_assigned
+      - required_context_available
+    required_documents:
+      - work_package
+    required_checks:
+      - readiness_score
+    allowed_next:
+      - implementation
+      - blocked
+  - id: implementation
+    name: Implementation
+    owner_role: engineer
+    allowed_roles:
+      - engineer
+    entry_criteria:
+      - work_package_is_ready_for_build
+      - scope_is_known
+      - allowed_role_is_engineer_or_explicitly_permitted
+    exit_criteria:
+      - change_completed_within_scope
+      - relevant_tests_or_checks_added_or_run
+      - self_check_report_written
+    required_documents:
+      - work_package
+    required_checks:
+      - scope_check
+    allowed_next:
+      - developer_validation
+      - blocked
+  - id: developer_validation
+    name: Developer Validation
+    owner_role: engineer
+    allowed_roles:
+      - engineer
+    entry_criteria:
+      - implementation_exit_criteria_met
+    exit_criteria:
+      - changed_files_listed
+      - tests_or_checks_reported
+      - known_risks_reported
+    required_documents:
+      - self_check_report
+    required_checks:
+      - developer_self_check
+    allowed_next:
+      - test_review
+      - implementation
+      - blocked
+  - id: test_review
+    name: Test Review
+    owner_role: tester
+    allowed_roles:
+      - tester
+    entry_criteria:
+      - developer_validation_completed
+      - test_evidence_available_or_gap_reported
+    exit_criteria:
+      - acceptance_criteria_validated
+      - defects_registered_or_none
+      - test_evidence_recorded
+    required_documents:
+      - test_result
+    required_checks:
+      - acceptance_validation
+    allowed_next:
+      - code_review
+      - implementation
+      - blocked
+  - id: code_review
+    name: Code Review
+    owner_role: reviewer
+    allowed_roles:
+      - reviewer
+    entry_criteria:
+      - test_review_completed_or_explicitly_not_applicable
+    exit_criteria:
+      - scope_reviewed
+      - quality_and_regression_risk_assessed
+      - open_findings_resolved_or_accepted
+    required_documents:
+      - review_report
+    required_checks:
+      - process_compliance_check
+      - scope_review
+    allowed_next:
+      - release_review
+      - implementation
+      - test_review
+      - blocked
+  - id: release_review
+    name: Release Review
+    owner_role: deployment_manager
+    allowed_roles:
+      - deployment_manager
+      - reviewer
+    entry_criteria:
+      - code_review_completed
+      - build_lint_test_status_known
+    exit_criteria:
+      - deployment_plan_checked
+      - rollback_plan_checked
+      - health_readiness_checks_known
+      - release_readiness_recorded
+    required_documents:
+      - release_readiness_report
+    required_checks:
+      - release_readiness
+      - secret_exposure_check
+    allowed_next:
+      - done
+      - code_review
+      - blocked
+  - id: done
+    name: Done
+    owner_role: reviewer
+    allowed_roles:
+      - reviewer
+      - conductor
+    entry_criteria:
+      - all_required_quality_gates_passed_or_explicitly_accepted
+      - test_evidence_recorded
+      - review_completed
+      - reporting_updated
+    exit_criteria: []
+    required_documents:
+      - final_task_report
+    required_checks:
+      - done_gate
+    allowed_next: []
+  - id: blocked
+    name: Blocked
+    owner_role: conductor
+    allowed_roles:
+      - conductor
+      - scrum_master
+      - architect
+      - reviewer
+      - deployment_manager
+    entry_criteria:
+      - blocking_reason_recorded
+      - owner_role_recorded
+      - first_next_step_recorded
+    exit_criteria:
+      - blocker_resolved_or_accepted
+      - return_state_recorded
+    required_documents:
+      - blocker_record
+    required_checks:
+      - blocker_owner_check
+    allowed_next:
+      - idea
+      - intake
+      - refinement
+      - architecture_review
+      - ready_for_build
+      - implementation
+      - developer_validation
+      - test_review
+      - code_review
+      - release_review
+bypass_rules:
+  - id: explicit_bypass_only
+    applies_to: all_states
+    allowed_when:
+      - bypass_rule_exists
+      - owner_and_reason_are_recorded
+      - risk_and_follow_up_are_recorded
+      - reviewer_or_conductor_accepts
+

@@ -1,0 +1,178 @@
+schema_version: 0.1.0
+kind: quality_model
+metadata:
+  project_id: agent-project-os
+  versioned_at: "2026-05-19T13:34:29+02:00"
+  source_status: baseline
+finding_levels:
+  - id: blocker
+    meaning: Must be fixed before approval or deployment.
+    blocks_approval: true
+  - id: high
+    meaning: Must be fixed or explicitly accepted.
+    blocks_approval: true
+  - id: medium
+    meaning: Must be planned or justified.
+    blocks_approval: false
+  - id: low
+    meaning: Improvement or documentation point.
+    blocks_approval: false
+validators:
+  - id: role_has_responsibilities
+    applies_to: role
+    severity: blocker
+    condition: responsibilities_min_items_1
+  - id: role_has_authorities
+    applies_to: role
+    severity: blocker
+    condition: allowed_min_items_1
+  - id: role_has_restrictions
+    applies_to: role
+    severity: blocker
+    condition: forbidden_min_items_1
+  - id: lifecycle_state_has_entry_criteria
+    applies_to: lifecycle_state
+    severity: blocker
+    condition: entry_criteria_min_items_1_except_done
+  - id: lifecycle_state_has_exit_criteria
+    applies_to: lifecycle_state
+    severity: blocker
+    condition: exit_criteria_min_items_1_except_done
+  - id: lifecycle_state_has_owner
+    applies_to: lifecycle_state
+    severity: blocker
+    condition: owner_role_present
+  - id: lifecycle_state_has_allowed_next
+    applies_to: lifecycle_state
+    severity: high
+    condition: allowed_next_present_except_done
+  - id: work_package_has_acceptance_criteria
+    applies_to: work_package
+    severity: blocker
+    condition: acceptance_criteria_min_items_1
+  - id: work_package_has_test_criteria
+    applies_to: work_package
+    severity: blocker
+    condition: test_criteria_min_items_1
+  - id: work_package_has_reporting_requirements
+    applies_to: work_package
+    severity: blocker
+    condition: reporting_format_present
+  - id: no_duplicate_final_accountability
+    applies_to: governance
+    severity: high
+    condition: decision_rule_has_single_accountable_role
+  - id: no_allowed_forbidden_conflict
+    applies_to: role
+    severity: blocker
+    condition: allowed_and_forbidden_do_not_overlap
+  - id: bypass_rule_required
+    applies_to: lifecycle_transition
+    severity: blocker
+    condition: skipped_state_requires_bypass
+  - id: done_requires_test_evidence
+    applies_to: work_package_transition
+    severity: blocker
+    condition: done_entry_requires_test_evidence
+  - id: architecture_change_requires_adr_rule
+    applies_to: architecture_change
+    severity: blocker
+    condition: architecture_change_has_adr_or_no_adr_reason
+quality_gates:
+  - id: schema_validation
+    name: Schema validation
+    applies_to:
+      - source_model
+    required_evidence:
+      - parseable_yaml
+      - required_fields_present
+    blocking: true
+    owner_role: reviewer
+  - id: governance_consistency
+    name: Governance consistency
+    applies_to:
+      - role_model
+      - governance_model
+    required_evidence:
+      - no_role_action_conflicts
+      - escalation_rules_present
+    blocking: true
+    owner_role: conductor
+  - id: lifecycle_completeness
+    name: Lifecycle completeness
+    applies_to:
+      - lifecycle_model
+    required_evidence:
+      - all_states_have_owner
+      - all_states_have_criteria
+      - transitions_are_defined
+    blocking: true
+    owner_role: scrum_master
+  - id: work_package_readiness
+    name: Work package readiness
+    applies_to:
+      - work_package
+    required_evidence:
+      - readiness_checks_recorded
+      - split_advice_recorded_when_needed
+    blocking: true
+    owner_role: scrum_master
+  - id: ai_output_contract_validation
+    name: AI output contract validation
+    applies_to:
+      - ai_generated_model
+    required_evidence:
+      - output_matches_schema
+      - open_questions_are_explicit
+      - no_unapproved_roles_or_states
+    blocking: true
+    owner_role: reviewer
+  - id: security_and_secret_check
+    name: Security and secret check
+    applies_to:
+      - source_model
+      - documentation
+      - release
+    required_evidence:
+      - no_secrets_in_files
+      - server_side_authorization_planned
+    blocking: true
+    owner_role: deployment_manager
+  - id: documentation_completeness
+    name: Documentation completeness
+    applies_to:
+      - release
+      - process_change
+    required_evidence:
+      - affected_docs_updated
+      - backlog_or_report_updated
+    blocking: false
+    owner_role: reviewer
+  - id: release_readiness
+    name: Release readiness
+    applies_to:
+      - release
+    required_evidence:
+      - build_lint_test_status_known
+      - rollback_plan_known
+      - health_readiness_known
+    blocking: true
+    owner_role: deployment_manager
+test_strategy:
+  unit:
+    - role_authority_rules
+    - transition_rules
+    - readiness_score
+    - conflict_rules
+  integration:
+    - source_model_save_load
+    - generated_output
+    - api_contracts
+    - audit_log
+  end_to_end:
+    - project_intake
+    - governance_generation
+    - lifecycle_validation
+    - work_package_assessment
+    - release_readiness_report
+

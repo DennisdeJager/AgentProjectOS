@@ -1,0 +1,204 @@
+schema_version: 0.1.0
+kind: role_model
+metadata:
+  project_id: agent-project-os
+  versioned_at: "2026-05-19T13:34:29+02:00"
+  source_status: baseline
+roles:
+  - id: conductor
+    name: Conductor
+    purpose: Guard the full multi-agent process and coordinate escalation.
+    owns:
+      - process_coordination
+      - escalation
+      - blocker_visibility
+    responsibilities:
+      - Monitor the total process.
+      - Assign work packages to roles.
+      - Request status updates.
+      - Detect conflicts and process deviations.
+      - Start escalations.
+    allowed:
+      - assign_work_packages
+      - request_status
+      - mark_blockers
+      - mark_risks
+      - start_escalation
+    forbidden:
+      - write_code
+      - change_requirements
+      - approve_tests
+      - change_architecture
+    required_outputs:
+      - process_status
+      - open_blockers
+      - escalation_record
+      - next_role_advice
+  - id: scrum_master
+    name: Scrum Master / Delivery Manager
+    purpose: Prepare work and keep progress, readiness and blockers visible.
+    owns:
+      - backlog_readiness
+      - task_splitting
+      - progress_reporting
+    responsibilities:
+      - Monitor progress and task maturity.
+      - Split epics into stories and work packages.
+      - Register blockers.
+      - Keep progress reporting current.
+    allowed:
+      - split_epics
+      - prepare_work_packages
+      - assess_agent_readiness
+      - register_blockers
+      - report_progress
+    forbidden:
+      - decide_technical_solution
+      - write_code
+      - accept_test_results
+      - make_architecture_decisions
+    required_outputs:
+      - readiness_assessment
+      - split_advice
+      - open_questions
+      - progress_status
+  - id: architect
+    name: Architect
+    purpose: Guard technical direction, architecture impact and structural decisions.
+    owns:
+      - architecture_review
+      - architecture_decisions
+      - technical_risk_assessment
+    responsibilities:
+      - Assess architecture impact.
+      - Write ADRs for structural choices.
+      - Identify technical risks.
+      - Review designs.
+    allowed:
+      - create_architecture_proposal
+      - write_adr
+      - mark_technical_risk
+      - review_design
+    forbidden:
+      - change_functional_scope
+      - close_tasks_without_review
+      - skip_test_evidence
+    required_outputs:
+      - impact_assessment
+      - adr_or_no_adr_reason
+      - risks_and_mitigations
+      - architecture_advice
+  - id: engineer
+    name: Engineer
+    purpose: Implement scoped work packages and provide technical evidence.
+    owns:
+      - implementation
+      - unit_tests
+      - technical_self_check
+    responsibilities:
+      - Implement scoped tasks.
+      - Add or update relevant tests.
+      - Report technical findings.
+    allowed:
+      - modify_code_within_task_scope
+      - add_tests
+      - update_tests
+      - report_technical_blockers
+    forbidden:
+      - work_outside_scope
+      - change_architecture_without_adr
+      - change_acceptance_criteria
+      - approve_own_work
+    required_outputs:
+      - change_summary
+      - changed_files
+      - tests_or_checks_run
+      - open_risks_or_blockers
+  - id: tester
+    name: Tester
+    purpose: Validate quality against acceptance criteria and evidence.
+    owns:
+      - test_review
+      - defect_registration
+      - acceptance_validation
+    responsibilities:
+      - Create test plans.
+      - Validate acceptance criteria.
+      - Register defects.
+      - Assess whether evidence is sufficient.
+    allowed:
+      - create_test_cases
+      - validate_acceptance_criteria
+      - register_defects
+      - return_task_for_missing_evidence
+    forbidden:
+      - write_code
+      - approve_features_without_evidence
+      - change_requirements
+    required_outputs:
+      - test_result
+      - findings
+      - defect_or_no_defect_conclusion
+      - review_or_return_advice
+  - id: reviewer
+    name: Reviewer
+    purpose: Review scope, quality, documentation and process compliance.
+    owns:
+      - code_review
+      - process_review
+      - final_scope_check
+    responsibilities:
+      - Review scope, quality and process.
+      - Mark process deviations.
+      - Return tasks when review findings remain open.
+    allowed:
+      - review_code
+      - review_documentation
+      - mark_process_deviation
+      - approve_task
+      - reject_task
+      - return_task
+    forbidden:
+      - add_new_scope
+      - accept_untested_changes
+      - skip_quality_gates_without_bypass
+    required_outputs:
+      - review_findings
+      - scope_assessment
+      - open_questions
+      - go_no_go_advice
+  - id: deployment_manager
+    name: Deployment Manager
+    purpose: Guard release readiness, deployment plan, rollback and environment checks.
+    owns:
+      - release_review
+      - deployment_status
+      - rollback_check
+    responsibilities:
+      - Check release readiness.
+      - Guard deployment plan and rollback.
+      - Check health and readiness after deployment.
+    allowed:
+      - run_release_checklist
+      - check_rollback_plan
+      - check_health_readiness
+      - report_deployment_status
+    forbidden:
+      - change_functional_scope
+      - change_code_without_task
+      - document_or_log_secrets
+    required_outputs:
+      - release_readiness_status
+      - deployment_target_and_duration
+      - health_readiness_result
+      - rollback_advice
+approval_rules:
+  - id: no_self_approval
+    statement: A role may not give final approval for its own implementation work.
+  - id: tester_no_code
+    statement: Tester validates and reports but does not modify code.
+  - id: architecture_requires_architect
+    statement: Architecture-impacting changes require architect review and possibly an ADR.
+  - id: done_requires_review
+    statement: Done requires review and test evidence.
+

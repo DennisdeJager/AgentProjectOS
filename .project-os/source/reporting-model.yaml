@@ -1,0 +1,142 @@
+schema_version: 0.1.0
+kind: reporting_model
+metadata:
+  project_id: agent-project-os
+  versioned_at: "2026-05-19T13:34:29+02:00"
+  source_status: baseline
+reporting_principles:
+  - id: reporting_is_required
+    statement: Reporting is a required workflow output, not an optional note.
+  - id: evidence_over_claim
+    statement: Reports must include checks or explain why checks were not possible.
+  - id: next_role_can_continue
+    statement: Reports must give the next role enough context to continue safely.
+report_types:
+  - id: project_status
+    cadence: on_demand
+    owner_role: conductor
+    required_sections:
+      - summary
+      - work_package_counts
+      - blockers
+      - risks
+      - open_decisions
+      - release_readiness
+  - id: role_status
+    cadence: on_demand
+    owner_role: conductor
+    required_sections:
+      - role
+      - active_work
+      - completed_work
+      - blockers
+      - needed_input
+      - advice
+  - id: daily_report
+    cadence: daily_when_work_occurs
+    owner_role: scrum_master
+    required_sections:
+      - summary
+      - completed
+      - in_progress
+      - blockers
+      - risks
+      - decisions
+      - next_actions
+  - id: weekly_report
+    cadence: weekly_when_project_active
+    owner_role: scrum_master
+    required_sections:
+      - epic_progress
+      - blocker_trends
+      - open_risks
+      - open_decisions
+      - release_readiness
+      - governance_attention_points
+  - id: work_package_status
+    cadence: on_transition
+    owner_role: current_work_package_owner
+    required_sections:
+      - work_done
+      - changed_files
+      - checks_run
+      - decisions_taken
+      - risks_created_or_changed
+      - open_items
+      - advice_for_next_role
+  - id: release_readiness
+    cadence: before_release
+    owner_role: deployment_manager
+    required_sections:
+      - commit_or_version
+      - target_environment
+      - build_lint_test_status
+      - open_blockers
+      - open_risks
+      - deployment_plan
+      - rollback_plan
+      - health_readiness_status
+  - id: handover
+    cadence: on_role_transfer
+    owner_role: transferring_role
+    required_sections:
+      - from_role
+      - to_role
+      - summary
+      - important_files
+      - checks
+      - decisions
+      - risks
+      - open_items
+      - next_step_advice
+task_status_schema:
+  required_fields:
+    - id
+    - title
+    - status
+    - owner
+    - reviewer
+    - lifecycle_state
+    - progress
+  progress_fields:
+    - last_update
+    - confidence
+    - blockers
+    - tests_run
+  confidence_values:
+    - low
+    - medium
+    - high
+release_readiness_inputs:
+  - open_blockers
+  - test_evidence
+  - review_status
+  - deployment_plan
+  - rollback_plan
+  - open_risks
+  - open_decisions
+  - documentation_completeness
+release_readiness_outcomes:
+  - id: ready
+    meaning: All blocking gates passed.
+  - id: ready_with_risks
+    meaning: Blocking gates passed, but accepted non-blocking risks remain.
+  - id: not_ready
+    meaning: One or more blocking gates failed or evidence is missing.
+state_outputs:
+  - path: .project-os/state/project-status.yaml
+    generated_from:
+      - work_packages
+      - validation_findings
+      - risks
+      - decisions
+  - path: .project-os/state/active-work.yaml
+    generated_from:
+      - work_packages
+  - path: .project-os/state/decisions.yaml
+    generated_from:
+      - decisions
+  - path: .project-os/state/risks.yaml
+    generated_from:
+      - risks
+

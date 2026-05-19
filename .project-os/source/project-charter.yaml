@@ -1,0 +1,126 @@
+schema_version: 0.1.0
+kind: project_charter
+metadata:
+  project_id: agent-project-os
+  name: Agent Project OS
+  versioned_at: "2026-05-19T13:34:29+02:00"
+  source_status: baseline
+  owner_role: conductor
+project:
+  name: Agent Project OS
+  business_goal: >
+    Build an AI-assisted application that makes multi-agent software development
+    controllable, reviewable and transferable through explicit process models.
+  product_goal: >
+    Guide users from project intake to validated source models, generated
+    agent-readable documentation, human-readable reports and release readiness.
+  strictness: high
+  primary_record: project
+  operating_model_sequence:
+    - project_goal
+    - development_process
+    - roles_and_authorities
+    - work_packages
+    - decision_making
+    - quality_control
+    - progress_reporting
+    - release_and_handover
+users:
+  - id: smawa_owner
+    label: Smawa owner or project lead
+    goal: Structure projects and approve operating models.
+  - id: conductor
+    label: Conductor
+    goal: Distribute work, monitor status and escalate conflicts.
+  - id: scrum_master
+    label: Scrum Master / Delivery Manager
+    goal: Prepare tasks, monitor readiness and manage blockers.
+  - id: architect
+    label: Architect
+    goal: Guard technical direction and structural decisions.
+  - id: engineer
+    label: Engineer
+    goal: Implement scoped work packages with evidence.
+  - id: tester
+    label: Tester
+    goal: Validate acceptance criteria and register defects.
+  - id: reviewer
+    label: Reviewer
+    goal: Review scope, quality and process compliance.
+  - id: deployment_manager
+    label: Deployment Manager
+    goal: Validate release readiness, deployment and rollback.
+scope:
+  included:
+    - Project intake and project charter modeling.
+    - Governance model for roles, responsibilities, authorities and restrictions.
+    - Development lifecycle with criteria, owners and allowed transitions.
+    - Work package model with readiness scoring and split advice.
+    - Rule consistency engine for conflicts and missing rules.
+    - Reporting for progress, risks, decisions and release readiness.
+    - AI-assisted generation with validation and human approval.
+    - API-first core functionality for later MCP tools.
+  excluded_first_phase:
+    - Full CI/CD implementation for generated external projects.
+    - Automatic execution of all agent tasks in external repositories.
+    - Test or production deployment.
+    - Free AI-agent autonomy without source model validation.
+    - Secret storage outside environment variables or platform secret stores.
+core_entities:
+  - Project
+  - Role
+  - Responsibility
+  - Authority
+  - Restriction
+  - LifecycleState
+  - Transition
+  - WorkPackage
+  - Decision
+  - Risk
+  - Report
+  - QualityGate
+  - ValidationFinding
+success_criteria:
+  - id: sc_001
+    statement: A project can move from intake to validated source models.
+  - id: sc_002
+    statement: Every role has responsibilities, authorities and restrictions.
+  - id: sc_003
+    statement: Every lifecycle state has entry criteria, exit criteria, owner and allowed next states.
+  - id: sc_004
+    statement: Every work package can be scored for agent readiness.
+  - id: sc_005
+    statement: Rule conflicts are found and reported with clear recommendations.
+  - id: sc_006
+    statement: Markdown output can be regenerated from source models.
+  - id: sc_007
+    statement: Administration, audit, LLM selection and security are included from the start.
+risks:
+  - id: risk_markdown_as_source
+    title: Markdown becomes the source of truth
+    severity: high
+    likelihood: medium
+    mitigation: Treat .project-os/source as leading and regenerate Markdown from source models.
+  - id: risk_unbounded_ai_output
+    title: AI output escapes the approved schema
+    severity: high
+    likelihood: medium
+    mitigation: Require schema validation and human approval before storing source models.
+  - id: risk_oversized_tasks
+    title: Work packages become too large
+    severity: medium
+    likelihood: high
+    mitigation: Make readiness scoring and split advice mandatory before Ready for Build.
+constraints:
+  - Follow global Smawa AGENTS, DEPLOYMENT, LLM and UX guidelines.
+  - Keep secrets out of code, documentation, logs, commits and screenshots.
+  - Use Google authentication as the default auth pattern when application code starts.
+  - Keep API, UI and later MCP behavior aligned with the same business rules.
+open_questions:
+  - id: oq_stack
+    question: Which application stack will be used for the first deployable implementation?
+  - id: oq_storage
+    question: Will source models be stored first in files, a database, or both?
+  - id: oq_generation
+    question: Which documents should be generated first from source models?
+

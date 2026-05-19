@@ -1,0 +1,161 @@
+schema_version: 0.1.0
+kind: work_package_model
+metadata:
+  project_id: agent-project-os
+  versioned_at: "2026-05-19T13:34:29+02:00"
+  source_status: baseline
+required_fields:
+  - id
+  - title
+  - goal
+  - context
+  - non_goals
+  - files_in_scope
+  - files_out_of_scope
+  - dependencies
+  - acceptance_criteria
+  - test_criteria
+  - allowed_role
+  - reviewer_role
+  - risks
+  - expected_output
+  - reporting_format
+  - lifecycle_state
+field_rules:
+  id:
+    pattern: "TASK-[0-9]{4}"
+    required: true
+  title:
+    required: true
+    max_words: 14
+  goal:
+    required: true
+    must_be_user_or_process_relevant: true
+  context:
+    required: true
+  non_goals:
+    required: true
+    allow_empty_with_reason: true
+  files_in_scope:
+    required: true
+    allow_unknown_with_reason: true
+  files_out_of_scope:
+    required: true
+    allow_empty_with_reason: true
+  dependencies:
+    required: true
+    allow_empty: true
+  acceptance_criteria:
+    required: true
+    min_items: 1
+  test_criteria:
+    required: true
+    min_items: 1
+  allowed_role:
+    required: true
+    allowed_values:
+      - conductor
+      - scrum_master
+      - architect
+      - engineer
+      - tester
+      - reviewer
+      - deployment_manager
+  reviewer_role:
+    required: true
+    must_differ_from_allowed_role_when_final_approval: true
+  lifecycle_state:
+    required: true
+    allowed_values:
+      - idea
+      - intake
+      - refinement
+      - architecture_review
+      - ready_for_build
+      - implementation
+      - developer_validation
+      - test_review
+      - code_review
+      - release_review
+      - done
+      - blocked
+readiness_checks:
+  - id: scope_clear
+    label: Scope clear
+    expected: true
+    blocker_when_false: true
+  - id: acceptance_criteria_concrete
+    label: Acceptance criteria concrete
+    expected: true
+    blocker_when_false: true
+  - id: test_criteria_concrete
+    label: Test criteria concrete
+    expected: true
+    blocker_when_false: true
+  - id: files_in_scope_named
+    label: Files in scope named or unknown with reason
+    expected: true
+    blocker_when_false: false
+  - id: small_enough
+    label: Work package small enough
+    expected: true
+    blocker_when_false: true
+  - id: architecture_impact_clear
+    label: Architecture impact clear
+    expected: true
+    blocker_when_false: true
+  - id: dependencies_known
+    label: Dependencies known
+    expected: true
+    blocker_when_false: false
+  - id: reviewer_known
+    label: Reviewer known
+    expected: true
+    blocker_when_false: true
+  - id: reporting_format_known
+    label: Reporting format known
+    expected: true
+    blocker_when_false: true
+split_rules:
+  - id: no_multi_layer_without_reason
+    split_when: backend_frontend_database_combined_without_explicit_reason
+    recommendation: Split by technical layer unless a single vertical slice is explicitly justified.
+  - id: no_feature_plus_refactor
+    split_when: feature_and_refactor_combined
+    recommendation: Split refactor and feature work.
+  - id: no_multiple_domains
+    split_when: multiple_domains_are_changed
+    recommendation: Split by domain or process responsibility.
+  - id: acceptance_too_large
+    split_when: acceptance_criteria_are_too_many_or_mixed
+    recommendation: Split into smaller independently testable outcomes.
+  - id: unclear_test_strategy
+    split_when: test_strategy_unclear
+    recommendation: Move task back to refinement.
+  - id: multiple_primary_roles
+    split_when: multiple_roles_appear_to_own_execution
+    recommendation: Split by role responsibility.
+definition_of_ready:
+  - goal_and_scope_are_clear
+  - acceptance_criteria_are_concrete
+  - test_criteria_are_concrete
+  - lifecycle_state_can_reach_ready_for_build
+  - allowed_role_is_known
+  - reviewer_role_is_known
+  - blockers_and_risks_are_known
+definition_of_done:
+  - all_acceptance_criteria_met
+  - relevant_tests_or_checks_run_or_explained
+  - documentation_updated
+  - review_completed
+  - release_or_handover_information_available
+  - reporting_updated
+reporting_requirements:
+  - work_done
+  - changed_files
+  - checks_run
+  - decisions_taken
+  - risks_created_or_changed
+  - open_items
+  - advice_for_next_role
+

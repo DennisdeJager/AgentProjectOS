@@ -1,0 +1,108 @@
+schema_version: 0.1.0
+kind: governance_model
+metadata:
+  project_id: agent-project-os
+  versioned_at: "2026-05-19T13:34:29+02:00"
+  source_status: baseline
+governance_goal: >
+  Make responsibilities, authorities, restrictions, escalation and approval
+  rules explicit enough to validate before agents act.
+role_source: role-model.yaml
+principles:
+  - id: source_models_lead
+    statement: Structured source models are leading; Markdown is generated or explanatory output.
+  - id: explicit_authority
+    statement: Every role authority must be explicit and testable.
+  - id: explicit_restriction
+    statement: Every role must define actions it may not perform.
+  - id: no_hidden_approval
+    statement: Work cannot be approved without visible evidence and a permitted approver.
+  - id: escalation_over_assumption
+    statement: Conflicts and missing rules are escalated instead of guessed.
+decision_rules:
+  - id: product_scope_owner
+    decision: product_scope_change
+    accountable_role: conductor
+    required_input_roles:
+      - scrum_master
+      - reviewer
+    restriction: Technical roles may not change product scope independently.
+  - id: architecture_decision_owner
+    decision: architecture_change
+    accountable_role: architect
+    required_input_roles:
+      - engineer
+      - reviewer
+    restriction: Structural architecture changes require architecture review and ADR assessment.
+  - id: readiness_owner
+    decision: ready_for_build
+    accountable_role: scrum_master
+    required_input_roles:
+      - architect
+      - reviewer
+    restriction: A task cannot become Ready for Build without readiness checks.
+  - id: test_acceptance_owner
+    decision: acceptance_validation
+    accountable_role: tester
+    required_input_roles:
+      - engineer
+    restriction: Acceptance validation requires test evidence.
+  - id: release_owner
+    decision: release_readiness
+    accountable_role: deployment_manager
+    required_input_roles:
+      - reviewer
+      - tester
+    restriction: Release requires known build, test, rollback and health status.
+escalation_triggers:
+  - id: conflicting_rules
+    condition: Two rules contradict each other.
+    owner_role: conductor
+    required_record: validation_finding
+  - id: forbidden_required_action
+    condition: A role is required to do something it is forbidden to do.
+    owner_role: conductor
+    required_record: validation_finding
+  - id: missing_owner
+    condition: A task, decision or lifecycle state has no owner.
+    owner_role: scrum_master
+    required_record: blocker
+  - id: missing_criteria
+    condition: Acceptance criteria, test criteria, entry criteria or exit criteria are missing.
+    owner_role: scrum_master
+    required_record: blocker
+  - id: architecture_without_adr
+    condition: Architecture impact exists but ADR decision is missing or unassessed.
+    owner_role: architect
+    required_record: decision
+  - id: release_gate_failure
+    condition: Release is requested while a blocking gate has failed.
+    owner_role: deployment_manager
+    required_record: release_risk
+consistency_rules:
+  - id: role_must_have_responsibilities
+    severity: blocker
+    applies_to: role
+  - id: role_must_have_authorities
+    severity: blocker
+    applies_to: role
+  - id: role_must_have_restrictions
+    severity: blocker
+    applies_to: role
+  - id: no_role_action_conflict
+    severity: blocker
+    applies_to: role
+  - id: no_duplicate_final_accountability
+    severity: high
+    applies_to: decision_rule
+  - id: bypass_must_be_explicit
+    severity: blocker
+    applies_to: lifecycle_transition
+audit_requirements:
+  - governance_model_changed
+  - role_authority_changed
+  - role_restriction_changed
+  - escalation_started
+  - bypass_approved
+  - release_decision_recorded
+
