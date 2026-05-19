@@ -12,7 +12,7 @@ Status: in voorbereiding.
 
 Stories:
 
-- STORY-001: Maak eerste projectdocumentatieset.
+- STORY-001: Maak eerste projectdocumentatieset. Status: done op 2026-05-19.
 - STORY-002: Maak `.project-os/source/` YAML-modellen.
 - STORY-003: Definieer JSON schema's voor source-modellen.
 - STORY-004: Bouw eerste validator voor rollen en lifecycle.
@@ -63,4 +63,3 @@ Stories:
 - STORY-042: Bouw governance generatie met validatie.
 - STORY-043: Bouw lifecycle generatie met validatie.
 - STORY-044: Bouw AI verbeterloop voor validation findings.
-
