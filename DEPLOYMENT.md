@@ -19,7 +19,7 @@ Deploy standaard naar Dev:
 Beoogde GitHub repository:
 
 ```text
-https://github.com/DennisdeJager/AgenttProjectOS
+https://github.com/DennisdeJager/AgentProjectOS
 ```
 
 ## App-id
