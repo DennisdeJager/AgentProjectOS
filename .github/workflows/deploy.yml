@@ -74,13 +74,36 @@ jobs:
           ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
           ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_APP_DIR' && find '$DEPLOY_APP_DIR' -mindepth 1 ! -name '.env' -exec rm -rf {} +"
           printf '%s\n' "$GHCR_TOKEN" | ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" "docker login ghcr.io -u '$GHCR_USERNAME' --password-stdin"
-          tar --exclude .git --exclude node_modules --exclude dist --exclude .env -czf /tmp/capps-source.tar.gz .
-          scp -i ~/.ssh/deploy_key /tmp/capps-source.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_APP_DIR/source.tar.gz"
-          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" "cd '$DEPLOY_APP_DIR' && tar -xzf source.tar.gz && rm source.tar.gz"
           COMPOSE_FILE=""
           for candidate in compose.yaml compose.yml docker-compose.yml docker-compose.yaml; do
             if [ -f "$candidate" ]; then COMPOSE_FILE="$candidate"; break; fi
           done
+          if [ -n "$COMPOSE_FILE" ]; then
+            SOURCE_TAR="/tmp/capps-source.tar"
+            SOURCE_ARCHIVE="$SOURCE_TAR.gz"
+            rm -f "$SOURCE_TAR" "$SOURCE_ARCHIVE"
+            if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+              git archive --format=tar -o "$SOURCE_TAR" HEAD
+              if [ -f Dockerfile ] && ! git ls-files --error-unmatch Dockerfile >/dev/null 2>&1; then
+                tar --append -f "$SOURCE_TAR" Dockerfile
+              fi
+              gzip -f "$SOURCE_TAR"
+            else
+              set +e
+              tar --exclude .git --exclude node_modules --exclude dist --exclude .env -czf "$SOURCE_ARCHIVE" .
+              TAR_STATUS=$?
+              set -e
+              if [ "$TAR_STATUS" -ne 0 ]; then
+                if [ "$TAR_STATUS" -eq 1 ] && [ -s "$SOURCE_ARCHIVE" ]; then
+                  echo "Source archive completed with tar warnings; continuing with the generated archive."
+                else
+                  exit "$TAR_STATUS"
+                fi
+              fi
+            fi
+            scp -i ~/.ssh/deploy_key "$SOURCE_ARCHIVE" "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_APP_DIR/source.tar.gz"
+            ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" "cd '$DEPLOY_APP_DIR' && tar -xzf source.tar.gz && rm source.tar.gz"
+          fi
           if [ -z "$COMPOSE_FILE" ]; then
             COMPOSE_FILE="compose.yaml"
             GENERATED_WEB_SERVICE_NAME="${WEB_SERVICE_NAME:-web}"
@@ -127,11 +150,14 @@ jobs:
           alm_container_name_for_service() {
             local service="$(alm_slug "$1")"
             local role="$2"
-            local template="${ALM_CONTAINER_NAME_TEMPLATE:-{appId}-{service}}"
+            local template="${ALM_CONTAINER_NAME_TEMPLATE:-}"
+            [ -n "$template" ] || template="{appId}-{service}"
             local app_slug="$(alm_slug "$CAPP_APP_ID")"
             if [[ "$service" == "${app_slug}-"* ]] || [[ "$service" == "${app_slug}_"* ]]; then
               service="${service:${#app_slug}+1}"
               [ -n "$service" ] || service="$app_slug"
+            elif [[ -n "$service" ]] && { [[ "$app_slug" == *"-${service}" ]] || [[ "$app_slug" == *"_${service}" ]]; }; then
+              service=""
             fi
             local name="$template"
             name="${name//\{appId\}/$CAPP_APP_ID}"
@@ -149,7 +175,7 @@ jobs:
             ALM_COMPOSE_OVERRIDE="compose.alm-names.yaml"
             {
               printf 'services:\n'
-              docker compose -f "$COMPOSE_FILE" config --services 2>/dev/null | while read -r service; do
+              IMAGE_REF="$IMAGE_REF" WEB_PORT="${WEB_PORT:-${APP_PORT:-3000}}" APP_PORT="${APP_PORT:-${WEB_PORT:-3000}}" APP_ENV="${APP_ENV:-${{ inputs.environment }}}" docker compose -f "$COMPOSE_FILE" config --services | while read -r service; do
                 [ -n "$service" ] || continue
                 role="$(alm_role_for_service "$service")"
                 container_name="$(alm_container_name_for_service "$service" "$role")"
